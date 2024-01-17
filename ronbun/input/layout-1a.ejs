@@ -1,0 +1,112 @@
+<!Doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="/public/js/func.js"></script>
+  <title>CUD学習ツール</title>
+</head>
+<style type="text/css">
+  span#phrase {
+    color:<%= "#" + col[0] %>;
+  }
+  span#a1 {
+    color:<%= "#" + col[1] %>;
+  }
+  span#a2 {
+    color:<%= "#" + col[2] %>;
+  }
+  span#a3 {
+    color:<%= "#" + col[3] %>;
+  }
+  body{
+    font-size: 1.5rem;
+  }
+  #cho,#sen,#ano{
+    font-size: 2rem;
+  }
+  #cho{
+    font-weight: bold;
+  }
+  #sen,#ano{
+    border: 2px solid;
+    border-color:#c8c8c8;
+    width: <%= 2*15 %>rem;
+  }
+  #sen{
+    text-align:center;
+  }
+  #sim{
+    text-align:left;
+  }
+  .button{
+    font-size: 1.5rem;
+  }
+</style>
+<body>
+  <a href="/">トップページに戻る</a>
+  <hr>
+  <p>1部：文字の強調[ 1.配色 → 2.文字フォント → 3.装飾 ]</p>
+  <hr>
+  <h2><%= textdata[0].item %></h2>
+  <hr>
+
+  <form action="/question/1/answer" method="post">
+  <div id="que">
+    <p><%= textdata[0].que %></p>
+  </div>
+  <div id="cho">
+    <% let c; 
+      for (let row of choices){ 
+        if(row.ccode == col[0]) c = "checked";
+        else c = ""; %>
+    <font color="<%= '#' + row.ccode %>">
+      <input type="radio" name="choice" id="<%= row.ccode %>" value="<%= row.id %>" onclick="choiceColor(this.id)" <%= c %>><%= row.name %>
+    </font>
+    <% } %>
+  </div>
+  <div id="sen">
+    <p>文字を<span id="phrase">強調</span>します</p>
+  </div>    
+  
+  <div id="button">
+    <input type="hidden" name="id" value="<%= textdata[0].id %>">
+    <p><input type="submit" value="評価" class="button"></p>
+  </div>
+
+  <input type="hidden" name="count" value="<%= count %>">
+  <input type="hidden" name="prev1" value="<%= prev1 %>">
+  <input type="hidden" name="prev2" value="<%= prev2 %>">
+  </form>
+
+  <% if(e == 1){ %>
+    <div id="acho">
+      選択した色：<%= col[4] %>
+    </div>
+    <div id="ano">
+      ＜別色覚での見え方＞<br>
+      <div id="sim">
+        通常：文字を<span id="phrase">強調</span>します<br>
+        P型：文字を<span id="a1">強調</span>します<br>
+        D型：文字を<span id="a2">強調</span>します<br>
+        T型：文字を<span id="a3">強調</span>します
+      </div>
+    </div>
+    <div id="eva">
+      <% if(gb == 0) { %> 
+        <p><%= textdata[0].bad %></p>
+        <p>ポイント：<%= textdata[0].adv %></p>
+        <p>別の選択肢を選んでください。</p>
+      <% }else{ %> 
+        <p><%= textdata[0].good %></p>  
+        <p>ポイント：<%= textdata[0].adv %></p>
+        <hr>
+        <% if(count >= 3) { %> 
+          <p><a href="<%= '/question/2/' + col[0] %>">次の項目へ</a></p>
+        <% } else { %>
+          <p>別の選択肢も試しましょう。文字の強調に適する色を３つ以上試すことで次の項目に移ることができます。</p>
+        <% } 
+        } %>
+    </div>
+  <% } %>
+</body>
+</html>
